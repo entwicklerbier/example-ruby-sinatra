@@ -31,6 +31,17 @@ get '/' do
   end
 
 
+  bucket_name = ENV['S3_BUCKET_NAME'] || 'deis-store.local3.deisapp.com/fancy_new_bucket'
+
+  AWS::S3::Bucket.find(bucket_name).each do |object|
+    bucket_content.push object.to_s
+    p "  #{object.content}"
+  end
+  p '_____________'
+
+  bucket_list[bucket_name] = bucket_content
+
+
   erb :index, locals: {  whom: whom, container: container, buckets: bucket_list}
 end
 
