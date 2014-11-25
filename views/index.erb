@@ -1,0 +1,26 @@
+<p>
+Powered by <%= whom %>
+<br>
+Running <%= container %>
+</p>
+
+<ul>
+<% buckets.each do |bucket, content| %>
+  <li>
+    <%= bucket %>
+    <ul>
+      <% content.each do |object| %>
+      <li>
+        <%= object %>
+      </li>
+      <% end %>
+    </ul
+  </li>
+<% end %>
+</ul>
+
+<form action='/upload' method='post' accept-charset="utf-8" enctype="multipart/form-data">
+  <label for='content_file'>File</label>
+  <input type="file" name="content[file]" id="content_file" />
+  <button type='submit'>Save</button>
+</form>

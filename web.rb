@@ -4,9 +4,34 @@ require 'aws/s3'
 set :port, ENV["PORT"] || 5000
 
 get '/' do
-  @whom = ENV["POWERED_BY"] || "Deis!"
-  @container = `hostname`.strip || "unknown"
-  erb :index :locals => {  whom: @whom, container: @container}
+  whom = ENV["POWERED_BY"] || "Deis!"
+  container = `hostname`.strip || "unknown"
+
+  AWS::S3::Base.establish_connection!(
+    server:             ENV['S3_HOST'],
+    access_key_id:      ENV['S3_ACCESS_KEY_ID'],
+    secret_access_key:  ENV['S3_SECRET_ACCESS_KEY']
+  )
+
+  bucket_list = {}
+
+  AWS::S3::Service.buckets.each do |bucket|
+    bucket_content = []
+
+    p bucket
+
+    AWS::S3::Bucket.find(bucket.name).each do |object|
+      bucket_content.push "#{object.key}\t#{object.about['content-length']}\t#{object.about['last-modified']}"
+      p "  #{bucket.content}"
+    end
+    p '_____________'
+
+    bucket_list[bucket.name] = bucket_content
+
+  end
+
+
+  erb :index, locals: {  whom: whom, container: container, buckets: bucket_list}
 end
 
 post '/upload' do
@@ -16,11 +41,11 @@ end
 
 helpers do
   def upload(filename, file)
-    bucket = 'bucket_name'
+    bucket = ENV['S3_BUCKET_NAME'] || 'fancy_new_bucket'
     AWS::S3::Base.establish_connection!(
-    server:             ENV['S3_HOST'],
-    access_key_id:      ENV['S3_ACCESS_KEY_ID'],
-    secret_access_key:  ENV['S3_SECRET_ACCESS_KEY']
+      server:             ENV['S3_HOST'],
+      access_key_id:      ENV['S3_ACCESS_KEY_ID'],
+      secret_access_key:  ENV['S3_SECRET_ACCESS_KEY']
     )
     AWS::S3::S3Object.store(
     filename,
