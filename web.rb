@@ -9,6 +9,7 @@ get '/' do
 
   AWS::S3::Base.establish_connection!(
     server:             ENV['S3_HOST'],
+    port:               ENV['S3_PORT'],
     access_key_id:      ENV['S3_ACCESS_KEY_ID'],
     secret_access_key:  ENV['S3_SECRET_ACCESS_KEY']
   )
@@ -55,6 +56,7 @@ helpers do
     bucket = ENV['S3_BUCKET_NAME'] || 'deis-store.local3.deisapp.com/fancy_new_bucket'
     AWS::S3::Base.establish_connection!(
       server:             ENV['S3_HOST'] || 'deis-store.local3.deisapp.com',
+      port:               ENV['S3_PORT'],
       access_key_id:      ENV['S3_ACCESS_KEY_ID'],
       secret_access_key:  ENV['S3_SECRET_ACCESS_KEY']
     )
