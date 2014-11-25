@@ -22,7 +22,7 @@ get '/' do
 
     AWS::S3::Bucket.find(bucket.name).each do |object|
       bucket_content.push "#{object.key}\t#{object.about['content-length']}\t#{object.about['last-modified']}"
-      p "  #{bucket.content}"
+      p "  #{object.to_s}"
     end
     p '_____________'
 
