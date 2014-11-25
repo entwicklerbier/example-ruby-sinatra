@@ -41,7 +41,7 @@ end
 
 helpers do
   def upload(filename, file)
-    bucket = ENV['S3_BUCKET_NAME'] || 'fancy_new_bucket'
+    bucket = ENV['S3_BUCKET_NAME'] || 'deis-store.local3.deisapp.com/fancy_new_bucket'
     AWS::S3::Base.establish_connection!(
       server:             ENV['S3_HOST'] || 'deis-store.local3.deisapp.com',
       access_key_id:      ENV['S3_ACCESS_KEY_ID'],
